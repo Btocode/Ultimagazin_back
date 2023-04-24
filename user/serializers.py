@@ -15,23 +15,11 @@ class UserSerializer(serializers.ModelSerializer):
 
 class LoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=255, min_length=5)
-    password = serializers.CharField(max_length=68, min_length=3, write_only=True)
-    user_id = serializers.IntegerField(read_only=True)
-    tokens = serializers.CharField(max_length=255, min_length=5, read_only=True)
+    password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ["email", "password", "user_id", "tokens"]
-
-    def validate(self, attrs):
-        email = attrs.get("email", "")
-        password = attrs.get("password", "")
-        user = auth.authenticate(email=email, password=password)
-        if user:
-            return user
-        else:
-            raise AuthenticationFailed("Invalid credentials, try again")
-        return super().validate(attrs)
+        fields = ["email", "password"]
 
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -40,3 +28,9 @@ class SignUpSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["email", "full_name", "password"]
+
+    def validate(self, attrs):
+        email = attrs.get("email", "")
+        if User.objects.filter(email=email).exists():
+            raise serializers.ValidationError({"email": ("Email is already in use")})
+        return super().validate(attrs)

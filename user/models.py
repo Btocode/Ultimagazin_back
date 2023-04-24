@@ -13,7 +13,7 @@ from .managers import CustomUserManager
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     full_name = models.CharField(_("full name"), max_length=255, blank=True)
-    email = models.EmailField(_("email address", unique=True))
+    email = models.EmailField(_("email address"), unique=True)
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)

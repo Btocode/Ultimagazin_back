@@ -8,7 +8,11 @@ from django.contrib.auth import login, authenticate
 import json, datetime 
 from datetime import datetime
 from django.conf import settings
+from django.contrib.auth import get_user_model
 
+
+
+User = get_user_model()
 
 
 # Create your views here.
@@ -21,7 +25,7 @@ class LoginAPIView(APIView):
     def post(self, request):
         serializer = serializers.LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data
+        user = authenticate(email=serializer.validated_data['email'],password=serializer.validated_data['password'])
 
         if user:
             return Response(helpers.get_user_details(user), status=status.HTTP_200_OK)
@@ -35,5 +39,17 @@ class RegisterAPIView(APIView):
     def post(self, request):
         serializer = serializers.SignUpSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.save()
+        password = serializer.validated_data.pop('password')
+        user = User(**serializer.validated_data)
+        user.set_password(password)
+        user.save()
         return Response(helpers.get_user_details(user), status=status.HTTP_201_CREATED)
+
+
+class GetAllNetworkers(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = serializers.UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    # def get_queryset(self):
+    #     return self.queryset.filter(is_staff=True)
