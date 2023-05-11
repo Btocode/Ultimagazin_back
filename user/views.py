@@ -42,7 +42,9 @@ class RegisterAPIView(APIView):
         password = serializer.validated_data.pop('password')
         user = User(**serializer.validated_data)
         user.set_password(password)
+        print("here")
         user.save()
+        print(user)
         return Response(helpers.get_user_details(user), status=status.HTTP_201_CREATED)
 
 
@@ -51,5 +53,5 @@ class GetAllNetworkers(generics.ListAPIView):
     serializer_class = serializers.UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    # def get_queryset(self):
-    #     return self.queryset.filter(is_staff=True)
+    def get_queryset(self):
+        return self.queryset.all().order_by('-date_joined')

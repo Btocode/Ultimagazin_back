@@ -7,7 +7,13 @@ User = get_user_model()
 class LeadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lead
-        fields = ("reflink", "email", "name")
+        fields = ("email", "name")
+
+    def validate(self, attrs):
+        email = attrs.get("email", "")
+        if Lead.objects.filter(email=email).exists():
+            raise serializers.ValidationError({"email": ("Email is already in use")})
+        return super().validate(attrs)
 
 class ReflinkSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,4 +27,19 @@ class ReflinkSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"url": ("URL is already in use")})
         return super().validate(attrs)
         
+class ReflinkInfoSerializer(serializers.ModelSerializer):
+    leads = serializers.SerializerMethodField()
+    networker_name = serializers.CharField(source="networker.full_name", read_only=True)
+    class Meta:
+        model = Reflink
+        fields = "id url created_at networker leads networker_name".split()
+
+    def get_leads(self, obj):
+        # Count the number of leads for each ref link
+        return Lead.objects.filter(reflink=obj).count()
+
+class LeadInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Lead
+        fields = "id name email created_at reflink".split()
 

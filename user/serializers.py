@@ -10,7 +10,7 @@ import json
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("id", "email", "full_name", "is_staff", "is_active")
+        fields = ("id", "email", "full_name", "is_staff", "is_active",'is_admin', 'date_joined')
 
 
 class LoginSerializer(serializers.ModelSerializer):

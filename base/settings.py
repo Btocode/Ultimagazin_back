@@ -23,14 +23,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["192.168.0.180", "192.168.0.249","http://localhost:5173", "*"]
 CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://localhost:5173"]
-CORS_ALLOWED_ORIGINS = [
-    "https://example.com",
-    "https://sub.example.com",
-    "http://localhost:8080",
-    "http://localhost:3000",
-    "http://127.0.0.1:9000",
-    "http://localhost:5173"
-]
+CORS_ORIGIN_ALLOW_ALL = True
+
 
 
 # Application definition
@@ -59,7 +53,9 @@ AUTH_USER_MODEL = "user.CustomUser"
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-    )
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 10,
 }
 
 MIDDLEWARE = [
