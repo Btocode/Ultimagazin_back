@@ -40,6 +40,11 @@ class CreateLeadView(generics.CreateAPIView):
             # Catch the serializer error and return a 400 error response
             return Response({'error': str(e)}, status=400)
 
+class RemoveLeadView(generics.DestroyAPIView):
+    queryset = Lead.objects.all()
+    serializer_class = serializers.LeadSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
 class CreateReflinks(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = serializers.ReflinkSerializer
@@ -89,3 +94,19 @@ class RemoveNetworker(generics.DestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+class ActivateNetworkerById(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        try:
+            user_id = self.kwargs.get('pk')
+            user = User.objects.get(id=user_id)
+            user.is_active = True
+            user.save()
+            return Response({'message': 'User activated successfully'})
+        except Exception as e:
+            return Response({'error': str(e)}, status=400)
