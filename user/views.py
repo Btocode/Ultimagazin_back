@@ -49,9 +49,15 @@ class RegisterAPIView(APIView):
 
 
 class GetAllNetworkers(generics.ListAPIView):
-    queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return self.queryset.all().order_by('-date_joined')
+        status = self.kwargs['status']
+        if status == 'active':
+            queryset = User.objects.filter(is_active=True)
+        elif status == 'inactive':
+            queryset = User.objects.filter(is_active=False)
+        else:
+            queryset = User.objects.all()
+        return queryset.order_by('-date_joined')
