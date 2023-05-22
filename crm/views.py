@@ -21,6 +21,7 @@ class CreateLeadView(generics.CreateAPIView):
         # Get the first name and email from the request data
         name = request.data.get('name')
         email = request.data.get('email').lower()
+        
 
         if(Lead.objects.filter(email=email).exists()):
             return Response(status = status.HTTP_200_OK, data = {'message': 'Email is already in use'})
@@ -63,9 +64,9 @@ class GetAllRefLinks(generics.ListAPIView):
 
     def get_queryset(self):
         if self.request.user.is_admin:
-            return self.queryset.all()
+            return self.queryset.all().order_by('-created_at')
 
-        return self.queryset.filter(networker=self.request.user)
+        return self.queryset.filter(networker=self.request.user).order_by('-created_at')
 
 class GetAllLeads(generics.ListAPIView):
     queryset = Lead.objects.all()
