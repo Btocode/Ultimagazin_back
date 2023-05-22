@@ -22,6 +22,9 @@ from rest_framework import viewsets, permissions
 
 
 class LoginAPIView(APIView):
+    '''
+    Login user
+    '''
     def post(self, request):
         serializer = serializers.LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -36,6 +39,10 @@ class LoginAPIView(APIView):
 
 
 class RegisterAPIView(APIView):
+    '''
+    Register a new user
+    '''
+
     def post(self, request):
         serializer = serializers.SignUpSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -49,6 +56,10 @@ class RegisterAPIView(APIView):
 
 
 class GetAllNetworkers(generics.ListAPIView):
+    '''
+    Get all networkers
+    '''
+
     serializer_class = serializers.UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 

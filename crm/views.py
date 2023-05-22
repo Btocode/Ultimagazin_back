@@ -14,6 +14,9 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 class CreateLeadView(generics.CreateAPIView):
+    '''
+    Create a new lead
+    '''
     serializer_class = serializers.LeadSerializer
     permission_classes = [permissions.AllowAny]
 
@@ -42,15 +45,24 @@ class CreateLeadView(generics.CreateAPIView):
             return Response({'error': str(e)}, status=400)
 
 class RemoveLeadView(generics.DestroyAPIView):
+    '''
+    Remove a lead
+    '''
     queryset = Lead.objects.all()
     serializer_class = serializers.LeadSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 class CreateReflinks(generics.CreateAPIView):
+    '''
+    Create a new reflink
+    '''
     queryset = User.objects.all()
     serializer_class = serializers.ReflinkSerializer
 
 class RemoveReflink(generics.DestroyAPIView):
+    '''
+    Remove a reflink
+    '''
     queryset = Reflink.objects.all()
     serializer_class = serializers.ReflinkSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -58,6 +70,9 @@ class RemoveReflink(generics.DestroyAPIView):
 
 
 class GetAllRefLinks(generics.ListAPIView):
+    ''' 
+    Get all reflinks
+    '''
     queryset = Reflink.objects.all()
     serializer_class = serializers.ReflinkInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -69,6 +84,9 @@ class GetAllRefLinks(generics.ListAPIView):
         return self.queryset.filter(networker=self.request.user).order_by('-created_at')
 
 class GetAllLeads(generics.ListAPIView):
+    ''' 
+    Get all leads
+    '''
     queryset = Lead.objects.all()
     serializer_class = serializers.LeadInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -80,6 +98,9 @@ class GetAllLeads(generics.ListAPIView):
         return self.queryset.filter(reflink__networker=self.request.user).order_by('-created_at')
 
 class GetAllLeadsOfARefLink(generics.ListAPIView):
+    ''' 
+    Get all leads of a reflink
+    '''
     queryset = Lead.objects.all()
     serializer_class = serializers.LeadInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -92,12 +113,19 @@ class GetAllLeadsOfARefLink(generics.ListAPIView):
         return self.queryset.none()
 
 class RemoveNetworker(generics.DestroyAPIView):
+    '''
+    Remove a networker
+    '''
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 
 class ActivateNetworkerById(generics.UpdateAPIView):
+    '''
+    Activate a networker by id
+    '''
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
