@@ -2,7 +2,8 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import Reflink, Lead
+from .models import Reflink, Lead, ReflinkTracker
+
 
 @admin.register(Reflink)
 class ReflinkAdmin(admin.ModelAdmin):
@@ -20,3 +21,8 @@ class LeadAdmin(admin.ModelAdmin):
     search_fields = "name email phone".split()
     list_per_page = 10
     ordering = ("-created_at",)
+
+
+@admin.register(ReflinkTracker)
+class ReflinkTrackerAdmin(admin.ModelAdmin):
+    list_display = ("reflink_id",)
