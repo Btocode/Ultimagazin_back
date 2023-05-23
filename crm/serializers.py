@@ -52,4 +52,4 @@ class ReflinkInfoSerializer(serializers.ModelSerializer):
 class LeadInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lead
-        fields = "id name email created_at reflink".split()
+        fields = "id name email phone created_at reflink".split()

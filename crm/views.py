@@ -36,7 +36,9 @@ class CreateLeadView(generics.CreateAPIView):
 
             # Create Lead
             lead = Lead.objects.create(name=name, email=email, reflink=reflinks[0])
-
+            if(request.data.get("phone")):
+                lead.phone = request.data.get("phone")
+                lead.save()
             # Return the lead data
             return Response(serializers.LeadInfoSerializer(lead).data)
 
