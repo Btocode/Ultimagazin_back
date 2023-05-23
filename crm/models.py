@@ -29,4 +29,6 @@ class Lead(models.Model):
         return self.email
 
 
-
+class ReflinkTracker(models.Model):
+    reflink_id = models.IntegerField()
+    

@@ -4,7 +4,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from django.contrib.auth import login, authenticate
 import json, datetime, random
-from .models import Lead, Reflink
+from .models import Lead, Reflink, ReflinkTracker
 from user.serializers import UserSerializer
 
 # Create your views here.
@@ -13,6 +13,29 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
+def get_reflink():
+    last_reflink = ReflinkTracker.objects.last()
+
+    if(last_reflink):
+        # Find the next reflink which id is greater than the last_reflink id
+        reflink = Reflink.objects.filter(id__gt=last_reflink.reflink_id).first()
+        if(reflink):
+            ReflinkTracker.objects.create(reflink_id=reflink.id)
+            # Delete the last_reflink
+            last_reflink.delete()
+            return reflink
+        else:
+            # If there is no reflink with id greater than the last_reflink id, then return the first reflink
+            reflink = Reflink.objects.all().first()
+            ReflinkTracker.objects.create(reflink_id=reflink.id)
+            last_reflink.delete()
+            return reflink
+
+    else:
+        reflink = Reflink.objects.all().first()
+        ReflinkTracker.objects.create(reflink_id=reflink.id)
+        return reflink
 class CreateLeadView(generics.CreateAPIView):
     '''
     Create a new lead
@@ -31,11 +54,9 @@ class CreateLeadView(generics.CreateAPIView):
 
         try:
             # Get all reflinks from the database and shuffle them
-            reflinks = list(Reflink.objects.all())
-            random.shuffle(reflinks)
-
+            reflink = get_reflink()
             # Create Lead
-            lead = Lead.objects.create(name=name, email=email, reflink=reflinks[0])
+            lead = Lead.objects.create(name=name, email=email, reflink=reflink)
             if(request.data.get("phone")):
                 lead.phone = request.data.get("phone")
                 lead.save()

@@ -4,5 +4,19 @@ from django.contrib import admin
 
 from .models import Reflink, Lead
 
-admin.site.register(Reflink)
-admin.site.register(Lead)
+@admin.register(Reflink)
+class ReflinkAdmin(admin.ModelAdmin):
+    list_display = "id networker url created_at".split()
+    list_filter = "created_at".split()
+    search_fields = "networker url".split()
+    list_per_page = 10
+    ordering = ("-created_at",)
+
+
+@admin.register(Lead)
+class LeadAdmin(admin.ModelAdmin):
+    list_display = "id name email phone created_at".split()
+    list_filter = "created_at".split()
+    search_fields = "name email phone".split()
+    list_per_page = 10
+    ordering = ("-created_at",)
