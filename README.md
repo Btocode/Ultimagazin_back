@@ -35,12 +35,11 @@ python3 manage.py migrate
 7. Start the Django development server:
 ```shell
 python3 manage.py runserver 
-
-License
-This project is licensed under the MIT License.
+```
+_License
+This project is licensed under the MIT License._
 
 ```shell
-
 Replace `your-repo-url`, `project-folder`, and update the necessary environment variables, secret key, and other configuration details based on your specific app requirements.
 
 Remember to include a `LICENSE` file in your project directory if you haven't already and update the `License` section in the `readme.md` file accordingly.
